@@ -1,0 +1,33 @@
+version: '{branch}-{build}'
+
+# Do not build on tags (GitHub only)
+skip_tags: true
+
+os: Visual Studio 2015
+
+
+install:
+  - set PATH=%PATH%;C:\mingw-w64\i686-5.3.0-posix-dwarf-rt_v4-rev0\mingw32\bin
+
+before_build:
+  - cd "%APPVEYOR_BUILD_FOLDER%"
+  - git submodule update --init --remote --depth 1 --recursive
+
+build_script:
+  - cd "%APPVEYOR_BUILD_FOLDER%"\src
+  - mingw32-make -j2
+  - mingw32-make -j2 test
+
+test: off
+
+
+after_build:
+  - cd "%APPVEYOR_BUILD_FOLDER%"
+  - copy "%APPVEYOR_BUILD_FOLDER%\src\concurrent.exe" "%APPVEYOR_BUILD_FOLDER%"  # the artifact must reside at the source repo root
+  - 'powershell -Command "& { $hash = (Get-FileHash -Algorithm SHA1 "concurrent.exe").hash.ToString().toLower(); Write-Host $hash " *concurrent.exe"; }" > "concurrent.exe.sha1"'
+
+#artifacts:
+#  - path: concurrent.exe
+#    name: executable
+#  - path: concurrent.exe.sha1
+#    name: checksum#

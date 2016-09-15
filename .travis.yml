@@ -1,0 +1,33 @@
+language: cpp
+
+os:
+  - linux
+  - osx
+
+compiler:
+  - g++
+  - clang
+
+# opt-in Ubuntu Trusty
+sudo: required
+dist: trusty
+
+addons:
+  apt:
+    # sources list: https://github.com/travis-ci/apt-source-whitelist/blob/master/ubuntu.json
+    sources:
+    - ubuntu-toolchain-r-test
+    # packages list: https://github.com/travis-ci/apt-package-whitelist/blob/master/ubuntu-precise
+    packages:
+    - g++-5
+
+
+before_script:
+  - cd "$TRAVIS_BUILD_DIR"
+  - git submodule update --init --remote --depth 1 --recursive
+
+script:
+  - if [ "$TRAVIS_OS_NAME" = "linux" -a "$CXX" = "g++" ]; then CXX=g++-5; fi
+  - cd "$TRAVIS_BUILD_DIR"/src
+  - make -j2
+  - make -j2 test

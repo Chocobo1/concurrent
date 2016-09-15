@@ -1,0 +1,40 @@
+#!/bin/sh
+
+echo line 1
+echo line 2
+echo line 3
+echo line 4
+echo line 5
+echo line 6
+
+# echo you can't see me
+rem can not see me either
+
+### THREADS: 10 ###
+
+echo line6
+echo line5
+echo line4
+echo line3
+echo line2
+echo line1
+
+
+echo line a
+echo line b
+
+### FENCE ###
+
+echo line c
+
+### FENCE ###
+
+echo line d
+echo line e
+
+### FENCE ###
+
+echo line f
+echo line g
+echo line h
+echo line i
