@@ -13,6 +13,7 @@
 
 
 #ifdef _WIN32
+#include <codecvt>
 #include <cstdlib>
 #else
 #include <stdio.h>
@@ -48,7 +49,9 @@ void Helpers::runCommand(const std::string &cmd)
 {
 #ifdef _WIN32
 
-	system(cmd.c_str());
+	std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+	std::wstring wideCmd = converter.from_bytes(cmd);
+	_wsystem(wideCmd.c_str());
 
 #else
 
