@@ -13,7 +13,7 @@ TEST_CASE("PseudoSemaphore::waitExit()", "[PseudoSemaphore]")
 	{
 		PseudoSemaphore s(RESOURCES);
 
-		const auto f = [&s]()
+		const auto sleep = [&s]()
 		{
 			s.wait();
 			std::this_thread::sleep_for(std::chrono::milliseconds(50));
@@ -23,7 +23,7 @@ TEST_CASE("PseudoSemaphore::waitExit()", "[PseudoSemaphore]")
 		REQUIRE(s.getValue() == RESOURCES);
 
 		for(int i = 0; i < CONSUMERS; ++i)
-			std::thread(f).detach();
+			std::thread(sleep).detach();
 
 		std::this_thread::sleep_for(std::chrono::milliseconds(10));
 		REQUIRE(s.getValue() == std::max(RESOURCES - CONSUMERS, 0));

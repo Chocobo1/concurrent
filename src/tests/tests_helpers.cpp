@@ -272,30 +272,55 @@ TEST_CASE("JobsManager::JobsManager()", "[JobsManager]")
 
 TEST_CASE("JobsManager::getCount()", "[JobsManager]")
 {
+	const auto f1 = []()
+	{
 #ifdef _WIN32  // workaround: appveyor doesn't like big tests
-	const int jobs = 100;
-	const int threads = 6;
+		const int jobs = 100;
+		const int threads = 6;
 #else
-	const int jobs = 1000;
-	const int threads = 60;
+		const int jobs = 1000;
+		const int threads = 60;
 #endif
 
-	JobsManager *jm = new JobsManager(threads);
+		JobsManager *jm = new JobsManager(threads);
 
-	bool overMax = false;
-	const auto func = [&overMax, &jm]
-	{
-		std::this_thread::sleep_for(std::chrono::milliseconds(10));
-		if(jm->getCount() > threads)
-			overMax = true;
+		bool overMax = false;
+		const auto func = [&overMax, &jm]
+		{
+			std::this_thread::sleep_for(std::chrono::milliseconds(10));
+			if(jm->getCount() > threads)
+				overMax = true;
+		};
+
+		for(int i = 0; i < jobs; ++i)
+			jm->addJob(func);
+
+		delete jm;
+
+		REQUIRE(!overMax);
 	};
+	f1();
 
-	for(int i = 0; i < jobs; ++i)
+	const auto f2 = []()
+	{
+		JobsManager *jm = new JobsManager(10);
+
+		const auto func = []()
+		{
+			std::this_thread::sleep_for(std::chrono::milliseconds(60));
+		};
+
 		jm->addJob(func);
+		std::this_thread::sleep_for(std::chrono::milliseconds(10));
+		REQUIRE(jm->getCount() == 1);
 
-	delete jm;
+		jm->addJob(func);
+		std::this_thread::sleep_for(std::chrono::milliseconds(10));
+		REQUIRE(jm->getCount() == 2);
 
-	REQUIRE(!overMax);
+		delete jm;
+	};
+	f2();
 }
 
 
