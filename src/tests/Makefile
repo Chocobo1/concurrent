@@ -5,7 +5,7 @@
 CXXFLAGS   = -std=c++11 -pipe -Wall -Wextra -Wpedantic -O2
 #CXXFLAGS  = -std=c++11 -pipe -Wall -Wextra -Wpedantic -Og -g -ggdb
 LDFLAGS	   = -pthread  # -s
-SRC_NAME   = tests tests_helpers ../helpers
+SRC_NAME   = tests tests_helpers ../helpers tests_semaphore ../semaphore
 EXECUTABLE = tests
 SRC_EXT    = cpp
 

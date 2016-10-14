@@ -5,7 +5,7 @@
 CXXFLAGS   = -std=c++11 -pipe -Wall -Wextra -Wpedantic -O2
 #CXXFLAGS  = -std=c++11 -pipe -Wall -Wextra -Wpedantic -Og -g -ggdb
 LDFLAGS	   = -pthread  # -s
-SRC_NAME   = main master helpers
+SRC_NAME   = main master helpers semaphore
 EXECUTABLE = concurrent
 SRC_EXT    = cpp
 
