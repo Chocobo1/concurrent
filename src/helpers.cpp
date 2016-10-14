@@ -176,47 +176,32 @@ unsigned long ReadFile::getReadCount() const
 
 
 // ---------------------------------------------------------
-JobsManager::JobsManager(const ConCount maxValue)
-	: concurrentCount(0)
+JobsManager::JobsManager(const ssize_t maxValue)
+	: sem(maxValue)
 {
-	setMax(maxValue);
 }
 
 
 JobsManager::~JobsManager()
 {
 	// must wait until all threads exit
-	waitUntil([this] { return concurrentCount <= 0; });
+	sem.waitExit();
 }
 
 
-JobsManager::ConCount JobsManager::getCount() const
+ssize_t JobsManager::getCount()
 {
-	return concurrentCount;
+	return sem.getCount();
 }
 
 
-void JobsManager::setMax(const ConCount newValue)
+void JobsManager::setMax(const ssize_t newValue)
 {
-	concurrentMax = std::max<ConCount>(1, newValue);
+	sem.setMaxValue(newValue);
 }
 
 
-JobsManager::ConCount JobsManager::getMax() const
+ssize_t JobsManager::getMax()
 {
-	return concurrentMax;
-}
-
-
-void JobsManager::waitUntil(const std::function<bool()> &okPred) const
-{
-	const long int TIME_MAX = 1000 * 1;  // 1 sec
-	const int expBase = 10;
-
-	long int time = 1;
-	while(!okPred())
-	{
-		std::this_thread::sleep_for(std::chrono::milliseconds(time));
-		time = std::min(time * expBase, TIME_MAX);
-	}
+	return sem.getTotalValue();
 }

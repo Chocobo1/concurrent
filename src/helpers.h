@@ -50,46 +50,39 @@ class ReadFile
 
 
 // ---------------------------------------------------------
+#include "semaphore.h"
+
 class JobsManager
 {
-		typedef unsigned ConCount;
-
 	public:
-		explicit JobsManager(const ConCount maxValue);
+		explicit JobsManager(const ssize_t maxValue);
 		~JobsManager();
 
 		template <typename F, typename... Args>
 		void addJob(const F fn, const Args &... args)
 		{
 			// this method will BLOCK!
-
-			std::unique_lock<std::mutex> l(mtxAddJob);  // thread-safe!!
-			waitUntil([this] { return concurrentCount < concurrentMax; });
-			++concurrentCount;
-			l.unlock();
+			sem.wait();
 
 			const auto work = [this, fn, args...]() -> void
 			{
 				//fprintf(stderr, "fn: %p\n", (void *) &fn);
 				//fprintf(stderr, "arg: %p\n\n", (void *) &args...);
 				fn(args...);
-				--concurrentCount;
+
+				sem.post();
 			};
 
 			std::thread(work).detach();
 		}
 
-		ConCount getCount() const;
+		ssize_t getCount();
 
-		void setMax(const ConCount newValue);  // NOT thread-safe!!
-		ConCount getMax() const;
+		void setMax(const ssize_t newValue);  // NOT thread-safe!!
+		ssize_t getMax();
 
 	private:
-		void waitUntil(const std::function<bool()> &okPred) const;
-
-		std::mutex mtxAddJob;
-		std::atomic<ConCount> concurrentMax;
-		std::atomic<ConCount> concurrentCount;
+		PseudoSemaphore sem;
 };
 
 #endif
