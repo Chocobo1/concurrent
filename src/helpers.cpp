@@ -47,7 +47,7 @@ unsigned Helpers::defaultWorkersNumber()
 
 void Helpers::runCommand(const std::string &cmd)
 {
-#ifdef _WIN32
+#if defined(_WIN32) && !defined(__MINGW32__)
 
 	std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
 	std::wstring wideCmd = converter.from_bytes(cmd);
