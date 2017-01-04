@@ -8,6 +8,9 @@ compiler:
   - g++
   - clang
 
+cache:
+  ccache: true
+
 # opt-in Ubuntu Trusty
 sudo: required
 dist: trusty
