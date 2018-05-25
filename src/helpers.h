@@ -55,7 +55,7 @@ class ReadFile
 class JobsManager
 {
 	public:
-		explicit JobsManager(const ssize_t maxValue);
+		explicit JobsManager(const int maxValue);
 		~JobsManager();
 
 		template <typename F, typename... Args>
@@ -76,10 +76,10 @@ class JobsManager
 			std::thread(work).detach();
 		}
 
-		ssize_t getCount();
+		int getCount();
 
-		void setMax(const ssize_t newValue);  // NOT thread-safe!!
-		ssize_t getMax();
+		void setMax(const int newValue);  // NOT thread-safe!!
+		int getMax();
 
 	private:
 		PseudoSemaphore sem;

@@ -3,7 +3,7 @@
 #include <functional>
 
 
-PseudoSemaphore::PseudoSemaphore(const ssize_t value)
+PseudoSemaphore::PseudoSemaphore(const int value)
 	: totalValue(value), nowValue(value)
 {
 }
@@ -20,7 +20,7 @@ void PseudoSemaphore::waitExit()
 }
 
 
-void PseudoSemaphore::setMaxValue(const ssize_t value)
+void PseudoSemaphore::setMaxValue(const int value)
 {
 	std::unique_lock<std::mutex> lock(valueMtx);
 
@@ -29,7 +29,7 @@ void PseudoSemaphore::setMaxValue(const ssize_t value)
 }
 
 
-ssize_t PseudoSemaphore::getTotalValue()
+int PseudoSemaphore::getTotalValue()
 {
 	std::unique_lock<std::mutex> lock(valueMtx);
 
@@ -37,7 +37,7 @@ ssize_t PseudoSemaphore::getTotalValue()
 }
 
 
-ssize_t PseudoSemaphore::getCount()
+int PseudoSemaphore::getCount()
 {
 	std::unique_lock<std::mutex> lock(valueMtx);
 
@@ -45,7 +45,7 @@ ssize_t PseudoSemaphore::getCount()
 }
 
 
-ssize_t PseudoSemaphore::getValue()
+int PseudoSemaphore::getValue()
 {
 	std::unique_lock<std::mutex> lock(valueMtx);
 

@@ -176,7 +176,7 @@ unsigned long ReadFile::getReadCount() const
 
 
 // ---------------------------------------------------------
-JobsManager::JobsManager(const ssize_t maxValue)
+JobsManager::JobsManager(const int maxValue)
 	: sem(maxValue)
 {
 }
@@ -189,19 +189,19 @@ JobsManager::~JobsManager()
 }
 
 
-ssize_t JobsManager::getCount()
+int JobsManager::getCount()
 {
 	return sem.getCount();
 }
 
 
-void JobsManager::setMax(const ssize_t newValue)
+void JobsManager::setMax(const int newValue)
 {
 	sem.setMaxValue(newValue);
 }
 
 
-ssize_t JobsManager::getMax()
+int JobsManager::getMax()
 {
 	return sem.getTotalValue();
 }
